@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Money Buy / 24H</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #05662C;
+            --primary-dark: #4f46e5;
+            --bg: #000304;
+            --card-bg: #010409;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --success: #10b981;
+            --border: rgba(128, 128, 128, 0.185);
+            --radius: 12px;
+        }
+        
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+             position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+        }
+        .header-left{
+            width: 10%;
+        }
+        .back-arrow {
+            color: var(--text);
+  
+            width: 30%;
+            height: 30%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 900;
+            border-radius: 100px;
+            font-size: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-icon {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        .header-icon:hover {
+            color: var(--text);
+        }
+
+        .profile-image {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--border);
+            margin-left: 20px;
+            cursor: pointer;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 600px;
+             min-height: 100vh;
+
+            margin: 20px auto;
+            background-color: var(--card-bg);
+              margin-top: 100px;
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .header-row {
+            display: flex;
+            font-weight: 500;
+            color: var(--primary);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--primary);
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .token-col {
+            flex: 2;
+            padding-left: 10px;
+        }
+
+        .buy-col, .wallets-col {
+            flex: 1;
+            text-align: right;
+        }
+
+        .copy-col {
+            width: 24px;
+            text-align: right;
+        }
+
+        .token-row {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .token-row:last-child {
+            border-bottom: none;
+        }
+
+        .token-info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .token-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .token-name {
+            flex: 2;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .token-symbol {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .token-buy {
+            flex: 1;
+            text-align: right;
+            font-weight: 500;
+            color: var(--success);
+        }
+
+        .token-wallets {
+            flex: 1;
+            text-align: right;
+            color: var(--text-secondary);
+        }
+
+        .copy-icon {
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 15px;
+        }
+
+        .copy-icon:hover {
+            color: var(--text);
+        }
+
+        .progress-container {
+            width: 90%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success);
+            border-radius: 3px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+                margin-top: 30px;
+            }
+            
+            .header-icon {
+                margin-left: 15px;
+            }
+            
+            .token-icon {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+            }
+            
+            .token-symbol {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-left">
+            <a href="/" class="back-arrow">←</a>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell header-icon"></i>
+            <i class="fas fa-cog header-icon"></i>
+            <img src="./icon's/profile.jpg" alt="Profile" class="profile-image">
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1>Smart Money Buy / 24H</h1>
+        
+        <div class="header-row">
+            <div class="token-col">Token</div>
+            <div class="buy-col">Buy/24H</div>
+            <div class="wallets-col">Wallets</div>
+            <div class="copy-col"></div>
+        </div>
+        
+        <div class="token-row">
+            <div class="token-info-row">
+                <div class="token-name">
+                    <div class="token-icon">F</div>
+                    <span class="token-symbol">FARTCOIN</span>
+                </div>
+                <div class="token-buy">$1.11M</div>
+                <div class="token-wallets">30</div>
+                <div class="copy-col"><i class="fas fa-copy copy-icon"></i></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 75%"></div>
+            </div>
+        </div>
+        
+        <div class="token-row">
+            <div class="token-info-row">
+                <div class="token-name">
+                    <div class="token-icon">P</div>
+                    <span class="token-symbol">PNUT</span>
+                </div>
+                <div class="token-buy">$340K</div>
+                <div class="token-wallets">11</div>
+                <div class="copy-col"><i class="fas fa-copy copy-icon"></i></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 45%"></div>
+            </div>
+        </div>
+        
+        <div class="token-row">
+            <div class="token-info-row">
+                <div class="token-name">
+                    <div class="token-icon">A</div>
+                    <span class="token-symbol">AI16Z</span>
+                </div>
+                <div class="token-buy">$51.7K</div>
+                <div class="token-wallets">7</div>
+                <div class="copy-col"><i class="fas fa-copy copy-icon"></i></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 30%"></div>
+            </div>
+        </div>
+        
+        <div class="token-row">
+            <div class="token-info-row">
+                <div class="token-name">
+                    <div class="token-icon">G</div>
+                    <span class="token-symbol">GOAT</span>
+                </div>
+                <div class="token-buy">$46K</div>
+                <div class="token-wallets">7</div>
+                <div class="copy-col"><i class="fas fa-copy copy-icon"></i></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+        </div>
+        
+        <div class="token-row">
+            <div class="token-info-row">
+                <div class="token-name">
+                    <div class="token-icon">M</div>
+                    <span class="token-symbol">MICHI</span>
+                </div>
+                <div class="token-buy">$25.9K</div>
+                <div class="token-wallets">5</div>
+                <div class="copy-col"><i class="fas fa-copy copy-icon"></i></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 15%"></div>
+            </div>
+        </div>
+        
+        <div class="token-row">
+            <div class="token-info-row">
+                <div class="token-name">
+                    <div class="token-icon">T</div>
+                    <span class="token-symbol">TITCOIN</span>
+                </div>
+                <div class="token-buy">$25.1K</div>
+                <div class="token-wallets">3</div>
+                <div class="copy-col"><i class="fas fa-copy copy-icon"></i></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 10%"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add copy functionality to copy icons
+        document.querySelectorAll('.copy-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const tokenSymbol = this.closest('.token-row').querySelector('.token-symbol').textContent;
+                navigator.clipboard.writeText(tokenSymbol).then(() => {
+                    const originalIcon = this.classList.contains('fa-copy') ? 'fa-copy' : 'fa-check';
+                    this.classList.remove(originalIcon);
+                    this.classList.add('fa-check');
+                    
+                    setTimeout(() => {
+                        this.classList.remove('fa-check');
+                        this.classList.add('fa-copy');
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

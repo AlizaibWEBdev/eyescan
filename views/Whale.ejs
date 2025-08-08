@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whale & VCs Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #05662C;
+            --primary-dark: #4f46e5;
+            --bg: #000304;
+            --card-bg: #010409;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: rgba(128, 128, 128, 0.185);
+            --radius: 12px;
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            padding: 15px 20px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left {
+            width: 10%;
+        }
+
+        .back-arrow {
+            color: var(--text);
+            width: 30%;
+            height: 30%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 900;
+            border-radius: 100px;
+            font-size: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-icon {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        .header-icon:hover {
+            color: var(--text);
+        }
+
+        .profile-image {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--border);
+            margin-left: 20px;
+            cursor: pointer;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            margin-top: 100px;
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border);
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        select,
+        input {
+            padding: 8px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .header-row {
+            display: flex;
+            font-weight: 500;
+            color: var(--primary);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--primary);
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .token-col {
+            flex: 2;
+            padding-left: 10px;
+        }
+
+        .amount-col,
+        .side-col,
+        .time-col {
+            flex: 1;
+            text-align: right;
+        }
+
+        .copy-col {
+            width: 24px;
+            text-align: right;
+        }
+
+        .token-row {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .token-row:last-child {
+            border-bottom: none;
+        }
+
+        .token-info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .token-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .token-name {
+            flex: 2;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .token-symbol {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .token-amount {
+            flex: 1;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .token-side {
+            flex: 1;
+            text-align: right;
+        }
+
+        .side-buy {
+            color: var(--success);
+        }
+
+        .side-sell {
+            color: var(--danger);
+        }
+
+        .token-time {
+            flex: 1;
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .copy-icon {
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 15px;
+        }
+
+        .copy-icon:hover {
+            color: var(--text);
+        }
+
+        .progress-container {
+            width: 90%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success);
+            border-radius: 3px;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                margin: 10px;
+                padding: 15px;
+                margin-top: 30px;
+                min-height: 100vh;
+            }
+
+            .header-icon {
+                margin-left: 15px;
+            }
+
+            .token-icon {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+            }
+
+            .token-symbol {
+                font-size: 14px;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            select,
+            input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="header-left">
+            <a href="/" class="back-arrow">←</a>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell header-icon"></i>
+            <i class="fas fa-cog header-icon"></i>
+            <img src="./icon's/profile.jpg" alt="Profile" class="profile-image">
+        </div>
+    </header>
+
+
+    <div class="container">
+        <h1>Whale & VCs Tracker</h1>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label">Min USD</label>
+                <input type="number" id="minUsd" value="1000" placeholder="Min USD">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Chain</label>
+                <select id="chain">
+                    <option value="sol">SOLANA</option>
+                    <option value="eth">ETH</option>
+                    <option value="bsc">BSC</option>
+                    <option value="base">BASE</option>
+                    <option value="sol">SOL</option>
+
+
+
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Side</label>
+                <select id="side">
+                    <option value="both" selected>Both</option>
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <div class="token-col">Token</div>
+            <div class="amount-col">Amount</div>
+            <div class="side-col">Side</div>
+            <div class="time-col">Time</div>
+            <div class="copy-col"></div>
+        </div>
+
+        <div id="data-container">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading data...
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const API_URL = '/api/whale-tracker';
+
+        // DOM elements
+        const minUsdInput = document.getElementById('minUsd');
+        const chainSelect = document.getElementById('chain');
+        const sideSelect = document.getElementById('side');
+        const dataContainer = document.getElementById('data-container');
+
+        // Function to fetch data from API
+        async function fetchData() {
+
+            const minUsd = minUsdInput.value || 1000;
+            const chain = chainSelect.value;
+            const side = sideSelect.value;
+
+            dataContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading data...</div>';
+
+            try {
+                let url = `${API_URL}?chain=${chain}&min_usd=${minUsd}`;
+
+
+                const response = await fetch(url);
+                let data = await response.json();
+
+                if (side !== 'both') {
+                    data = data.filter((item) => {
+
+
+                        return item.side.toLowerCase() == side.toLowerCase()
+                    })
+                }
+
+
+                renderData(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                dataContainer.innerHTML = '<div class="loading">Error loading data. Please try again.</div>';
+            }
+        }
+
+        // Function to render data
+        function renderData(data) {
+            if (!data || data.length === 0) {
+                dataContainer.innerHTML = '<div class="loading">No transactions found with current filters.</div>';
+                return;
+            }
+
+            // Sort by amount_usd descending
+            data.sort((a, b) => b.amount_usd - a.amount_usd);
+
+            // Find max amount for progress bars
+            const maxAmount = Math.max(...data.map(item => item.amount_usd));
+
+            let html = '';
+
+            data.forEach(item => {
+                const tokenSymbol = item.base_symbol || item.base_name || 'Token';
+                const contractAdress = item.base_id || 'Adress not found';
+                const firstLetter = tokenSymbol.charAt(0).toUpperCase();
+                const amountFormatted = formatCurrency(item.amount_usd);
+                const timeFormatted = formatTime(item.epoch_time);
+                const sideClass = item.side === 'buy' ? 'side-buy' : 'side-sell';
+                const sideText = item.side === 'buy' ? 'Buy' : 'Sell';
+                const progressWidth = (item.amount_usd / maxAmount * 100).toFixed(2);
+
+                html += `
+                <div class="token-row">
+                    <div class="token-info-row">
+                        <div class="token-name">
+                            <div class="token-icon">${firstLetter}</div>
+                            <span class="token-symbol">${tokenSymbol}</span>
+                        </div>
+                        <div class="token-amount">${amountFormatted}</div>
+                        <div class="token-side ${sideClass}">${sideText}</div>
+                        <div class="token-time">${timeFormatted}</div>
+                        <div class="copy-col"><i class="fas fa-copy copy-icon" data-symbol="${contractAdress}"></i></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                    </div>
+                </div>
+                `;
+            });
+
+            dataContainer.innerHTML = html;
+
+            // Add copy functionality to copy icons
+            document.querySelectorAll('.copy-icon').forEach(icon => {
+                icon.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const tokenSymbol = this.getAttribute('data-symbol');
+                    navigator.clipboard.writeText(tokenSymbol).then(() => {
+                        const originalIcon = this.classList.contains('fa-copy') ? 'fa-copy' : 'fa-check';
+                        this.classList.remove(originalIcon);
+                        this.classList.add('fa-check');
+
+                        setTimeout(() => {
+                            this.classList.remove('fa-check');
+                            this.classList.add('fa-copy');
+                        }, 2000);
+                    });
+                });
+            });
+        }
+
+        // Helper function to format currency
+        function formatCurrency(amount) {
+            if (amount >= 1000000) {
+                return `$${(amount / 1000000).toFixed(2)}M`;
+            } else if (amount >= 1000) {
+                return `$${(amount / 1000).toFixed(2)}K`;
+            }
+            return `$${amount.toFixed(2)}`;
+        }
+
+        // Helper function to format time
+        function formatTime(epochTime) {
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - epochTime;
+
+            if (diff < 60) return `${diff}s`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+            return `${Math.floor(diff / 86400)}d`;
+        }
+
+        // Event listeners for filters
+        minUsdInput.addEventListener('change', fetchData);
+        chainSelect.addEventListener('change', fetchData);
+        sideSelect.addEventListener('change', fetchData);
+
+        // Initial load
+        fetchData();
+    </script>
+</body>
+
+</html>
